@@ -76,7 +76,3 @@ def edit_file(request, file_id):
         user_file.file.save(user_file.file.name, ContentFile(new_file_content))
 
     return render(request, 'fonot/edit_file.html', {'user_file': user_file})
-
-
-def vid_viewer(request):
-	return render(request, 'fonot/vid_viewer.html')

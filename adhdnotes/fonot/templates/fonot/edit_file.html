@@ -1,15 +1,54 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit File</title>
+    <title>Notes {{ user_file.file.name }}</title>
+    <style>
+        .container {
+            display: flex; /* Use flex display to arrange elements side by side */
+        }
+        .form-container {
+            flex: 1; /* Take up all available horizontal space */
+        }
+        .video-container {
+            margin-left: 20px; /* Add some spacing to the video container */
+        }
+    </style>
 </head>
 <body>
-    <h2>Edit File</h2>
-    <form method="post">
-        {% csrf_token %}
-        <textarea name="file_content" rows="10" cols="50">{{ user_file.file.read }}</textarea>
-        <br>
-        <input type="submit" value="Save Changes">
-    </form>
+    <h2>{{ user_file.file.name }}</h2>
+    <div class="container">
+        <div class="form-container">
+            <form method="post">
+                {% csrf_token %}
+                <textarea name="file_content" rows="10" cols="100">{{ user_file.file.read }}</textarea>
+                <br>
+                <input type="submit" value="Save Changes">
+            </form>
+        </div>
+        <div class="video-container">
+            <video width="640" height="360">
+                <source src="{% static 'video.mp4' %}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+    <button id="playButton">Play</button>
+
+    <script>
+        const video = document.querySelector('video');
+        const playButton = document.getElementById('playButton');
+
+        playButton.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                playButton.innerHTML = 'Pause';
+            } else {
+                video.pause();
+                playButton.innerHTML = 'Play';
+            }
+        });
+    </script>
 </body>
 </html>
