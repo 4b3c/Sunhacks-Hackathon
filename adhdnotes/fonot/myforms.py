@@ -1,8 +1,7 @@
 from django import forms
-from .models import UserFile
+from .models import Note
 
-
-class UserFileForm(forms.ModelForm):
+class NoteForm(forms.ModelForm):
     class Meta:
-        model = UserFile
-        fields = ['file', 'description']
+        model = Note
+        fields = ['title', 'content']

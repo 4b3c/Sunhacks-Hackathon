@@ -2,15 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib import messages
-from .myforms import UserFileForm
-from .models import UserFile
 from django.core.files.base import ContentFile
-
-
+from .models import Note
+from .myforms import NoteForm
 
 
 def home(request):
     return render(request, 'fonot/home.html')
+
 
 def user_register(request):
     if request.method == 'POST':
@@ -26,6 +25,7 @@ def user_register(request):
         form = UserCreationForm()
     
     return render(request, 'fonot/register.html', {'form': form})
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -49,25 +49,32 @@ def user_logout(request):
 	return redirect('home')
 
 
-def upload_file(request):
-    if request.method == 'POST':
-        form = UserFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            user_file = form.save(commit=False)
-            user_file.user = request.user  # Associate the file with the logged-in user
-            user_file.save()
-            return redirect('file_list')  # Redirect to a file list page
-    else:
-        form = UserFileForm()
-    return render(request, 'fonot/upload_file.html', {'form': form})
+
+
+
+
+
 
 def file_list(request):
-    files = UserFile.objects.filter(user=request.user)
-    return render(request, 'fonot/file_list.html', {'files': files})
+    notes = Note.objects.filter(user=request.user)
+    return render(request, 'fonot/file_list.html', {'notes': notes})
+
+
+def create_file(request):
+    if request.method == 'POST':
+        form = NoteForm(request.POST)
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.user = request.user
+            note.save()
+            return redirect('file_list')
+    else:
+        form = NoteForm()
+    return render(request, 'fonot/create_file.html', {'form': form})
 
 
 def edit_file(request, file_id):
-    user_file = get_object_or_404(UserFile, id=file_id, user=request.user)
+    user_file = get_object_or_404(Note, id=file_id, user=request.user)
 
     if request.method == 'POST':
         new_file_content = request.POST['file_content']
@@ -76,3 +83,4 @@ def edit_file(request, file_id):
         user_file.file.save(user_file.file.name, ContentFile(new_file_content))
 
     return render(request, 'fonot/edit_file.html', {'user_file': user_file})
+
