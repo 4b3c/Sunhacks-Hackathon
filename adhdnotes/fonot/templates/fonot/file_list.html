@@ -1,39 +1,134 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>File List</title>
+    <title>Notes</title>
     <style type="text/css">
-        /* Add this CSS to your stylesheet or in a <style> tag in your HTML */
+        /* styles.css */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .sidebar {
+            background-color: #a5a5a5;
+            color: white;
+            width: 200px;
+            height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0;
+             font-size: 4.3em;
+        }
+
         .note-list {
             display: flex;
             flex-wrap: wrap;
+/*            justify-content: center;*/
         }
 
         .note {
-            background-color: yellow;
+            background-color: #FFFFCC;
             padding: 10px;
             margin: 10px;
-            min-width: 150px;
-            min-height: 150px;
+            width: 200px;
+            height: 200px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .note a {
+            font-weight: bold;
+            color: #000000;
+            text-decoration: none;
+        }
+
+        .note a:hover {
+            text-decoration: underline;
+        }
+
+        .note p {
+            margin: 10px 0;
+        }
+
+        a.create-link {
+            display: block;
+            margin-top: 20px;
+            color: #0074D9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a.create-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Custom button styles */
+        .custom-button {
+            background-color: #0074D9; /* Change the background color to your desired color */
+            color: white; /* Change the text color to your desired color */
+            border: none;
+            padding: 10px 10px;
+            font-size: 16px; /* Change the font size as needed */
+            border-radius: 5px; /* Add rounded corners if desired */
+            cursor: pointer;
+            margin: 5%;
+            width: 60%;
+        }
+
+        .custom-button:hover {
+            background-color: #0056A0; /* Change the hover background color to your desired color */
+        }
+
+        .delete_button {
+            position: absolute;
+            bottom: 10px; /* Adjust the distance from the bottom as needed */
+            right: 10px;
         }
 
     </style>
 </head>
 <body>
-    <h2>File List</h2>
-    
-    <!-- Display existing notes as sticky notes -->
-    <div class="note-list">
-        {% for note in notes %}
-            <div class="note">
-                <a href="{% url 'edit_file' note.id %}">{{ note.title }}</a>
-                <p>{{ note.content }}</p>
+    <div class="container">
+        <div class="sidebar">
+            <h1>Notes</h1>
+            <a class="create-link" href="{% url 'create_file' %}">
+                <button class="custom-button" style="">New note</button>
+            </a>
+            <a class="create-link" href="{% url 'home' %}">
+                <button class="custom-button" style="">Home</button>
+            </a>
+            <a class="create-link" href="{% url 'user_logout' %}">
+                <button class="custom-button" style="">Log out</button>
+            </a>
+        </div>
+        <div class="content">
+            <div class="note-list">
+                {% for note in notes %}
+                    <div class="note" style="background-color: {{ note.color }};">
+                        <a href="{% url 'edit_file' note.id %}">{{ note.title }}</a>
+                        <p>{{ note.content }}</p>
+                        <div class="delete-button">
+                            <a href="{% url 'delete_file' note.id %}">[del]</a>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
     </div>
-
-    <a href="{% url 'create_file' %}">Create a new file</a>
 </body>
 </html>
-
-

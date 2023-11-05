@@ -6,6 +6,8 @@ from django.core.files.base import ContentFile
 from .models import Note
 from .myforms import NoteForm
 
+import random
+
 
 def home(request):
     return render(request, 'fonot/home.html')
@@ -66,6 +68,7 @@ def create_file(request):
         if form.is_valid():
             note = form.save(commit=False)
             note.user = request.user
+            note.color = random.choice(['#FFFFCC', '#FFCCCC', '#CCE5FF', '#CCFFCC', '#FFD700', '#E6E6FA', '#FF9999', '#008080', '#E6E6FA', '#C0C0C0'])
             note.save()
             return redirect('file_list')
     else:
@@ -74,13 +77,22 @@ def create_file(request):
 
 
 def edit_file(request, file_id):
-    user_file = get_object_or_404(Note, id=file_id, user=request.user)
+    note = get_object_or_404(Note, id=file_id, user=request.user)
 
     if request.method == 'POST':
-        new_file_content = request.POST['file_content']
-        
-        # Use ContentFile to update file content
-        user_file.file.save(user_file.file.name, ContentFile(new_file_content))
+        new_content = request.POST.get('content')  # Correctly retrieve 'content'
+        note.content = new_content
+        note.save()
 
-    return render(request, 'fonot/edit_file.html', {'user_file': user_file})
+        # Redirect to the note detail page or another appropriate page
+        return redirect('file_list')  # Replace 'note_detail' with your detail view name
 
+    return render(request, 'fonot/edit_file.html', {'note': note})
+
+
+
+def delete_file(request, file_id):
+	note = get_object_or_404(Note, id=file_id, user=request.user)
+	note.delete()
+
+	return redirect('file_list')
