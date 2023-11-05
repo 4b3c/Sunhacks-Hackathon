@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit File</title>
+</head>
+<body>
+    <h2>Edit File</h2>
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="file_content" rows="10" cols="50">{{ user_file.file.read }}</textarea>
+        <br>
+        <input type="submit" value="Save Changes">
+    </form>
+</body>
+</html>
