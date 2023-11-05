@@ -121,10 +121,11 @@
                 {% for note in notes %}
                     <div class="note" style="background-color: {{ note.color }};">
                         <a href="{% url 'edit_file' note.id %}">{{ note.title }}</a>
-                        <p>{{ note.content }}</p>
                         <div class="delete-button">
                             <a href="{% url 'delete_file' note.id %}">[del]</a>
                         </div>
+                        <p>{{ note.content }}</p>
+                        
                     </div>
                 {% endfor %}
             </div>
